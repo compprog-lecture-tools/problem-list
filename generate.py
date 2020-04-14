@@ -109,7 +109,7 @@ def build_pdfs(problems, out_dir):
     pdf_dir = out_dir / 'pdfs'
     pdf_dir.mkdir(exist_ok=True)
     for problem in problems:
-        print(f'Building {problem}')
+        print(f'Building {problem}', flush=True)
         problem_pdf_dir = pdf_dir / str(problem)
         problem_pdf_dir.mkdir(exist_ok=True, parents=True)
         pdf_proc = subprocess.run(['make', 'pdf'], cwd=problem.dir)
@@ -161,7 +161,7 @@ def problem_html_id(course, contest, name):
 
 
 def generate_pages(problems, args):
-    print('Generating pages')
+    print('Generating pages', flush=True)
     out_dir = args.out_dir
     git_hash = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'],
                               cwd=args.repo_root, stdout=subprocess.PIPE,
