@@ -38,7 +38,7 @@ echo '  done'
 echo -n 'Filling base directory...'
 ${SUDO} touch "${BASE_DIR}/htpasswd"
 ${SUDO} chown root:root "${BASE_DIR}/htpasswd"
-${SUDO} chmod 700 "${BASE_DIR}/htpasswd"
+${SUDO} chmod 644 "${BASE_DIR}/htpasswd"
 ${SUDO} cp "${SCRIPT_DIR}/default.conf" "${BASE_DIR}"
 ${SUDO} mkdir "${BASE_DIR}/static"
 echo '  done'
@@ -59,16 +59,18 @@ ${SUDO} chmod 700 "${DEPLOY_USER_HOME}/.ssh"
 echo "${DEPLOY_KEY}" | ${SUDO} tee "${DEPLOY_USER_HOME}/.ssh/authorized_keys" > /dev/null
 ${SUDO} chown "${DEPLOY_USER}:${DEPLOY_USER}" "${DEPLOY_USER_HOME}/.ssh/authorized_keys"
 ${SUDO} chmod 644 "${DEPLOY_USER_HOME}/.ssh/authorized_keys"
+${SUDO} chown "${DEPLOY_USER}:${DEPLOY_USER}" "${BASE_DIR}/static"
+${SUDO} chmod 755 "${BASE_DIR}/static"
 echo '  done'
 
 echo -n 'Generating basic auth file using nginx container...'
 ${SUDO} docker pull nginx:1.17-alpine
 echo "${AUTH_PASSWORD}" | \
-    ${SUDO} docker run --rm -it nginx:1.17-alpine \
-        -v "${SCRIPT_DIR}/setup-password.sh:/setup-password.sh:ro" \
-        -v "${BASE_DIR}/htpasswd:/htpasswd" \
+    ${SUDO} docker run --rm -i \
+        -v "$(realpath "${SCRIPT_DIR}/setup-password.sh"):/setup-password.sh:ro" \
+        -v "$(realpath "${BASE_DIR}/htpasswd"):/htpasswd" \
         -e "USER=${AUTH_USER}" \
-        sh /setup-password.sh
+        nginx:1.17-alpine sh /setup-password.sh
 echo '  done'
 
 echo -n 'Reloading systemd daemon to install unit...'
