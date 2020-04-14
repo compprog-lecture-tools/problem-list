@@ -1,0 +1,22 @@
+[Unit]
+Description=Problem list static file host
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+ExecStartPre=-/usr/bin/docker stop -t5 %N
+ExecStartPre=-/usr/bin/docker rm %N
+ExecStart=/usr/bin/docker run --rm \
+                              --name %N \
+                              --hostname %N \
+                              --publish %PORT%:80 \
+                              --volume %BASEDIR%/htpasswd:/htpasswd:ro \
+                              --volume %BASEDIR%/default.conf:/etc/nginx/conf.d/default.conf:ro \
+                              --volume %BASEDIR%/static:/usr/share/nginx/html:ro \
+                              nginx:1.17-alpine
+ExecStop=-/usr/bin/docker stop -t5 %N
+
+[Install]
+WantedBy=multi-user.target
