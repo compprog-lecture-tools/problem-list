@@ -9,35 +9,34 @@ from lib import find_problems
 
 
 def main():
-    """Symlink problem build directories to a central cache dir.
+    """Install cached build directories into the problems.
 
-    This directory can then be cached by gitlab ci. Also delete build
-    directories for unknown problems, to avoid the cache growing when problems
-    get renamed or removed.
+    Also delete build directories for unknown problems from the cache, to avoid
+    the cache growing indefinitely when problems get renamed or removed.
     """
     root_dir = pathlib.Path.cwd()
     cache_dir = root_dir / '.cache/build'
     cache_dir.mkdir(exist_ok=True, parents=True)
 
     problem_dirs = find_problems(root_dir)
-    known_build_dirs = set()
+    known_build_dirs = {}
     for problem_dir in problem_dirs:
         problem = problem_dir.name
         contest = problem_dir.parent.name
         course = problem_dir.parents[1].name
-        problem_cache_dir = cache_dir / f'{course}__{contest}__{problem}'
-        problem_cache_dir.mkdir(exist_ok=True)
-        (problem_dir / 'build').symlink_to(problem_cache_dir,
-                                           target_is_directory=True)
-        known_build_dirs.add(problem_cache_dir.name)
-        print(f'Set up build caching for {course}/{contest}/{problem}')
+        cache_dir_name = f'{course}__{contest}__{problem}'
+        known_build_dirs[cache_dir_name] = problem_dir
 
     for entry in cache_dir.iterdir():
         if not entry.is_dir():
             continue
-        if entry.name not in known_build_dirs:
+        problem_dir = known_build_dirs.get(entry.name)
+        if problem_dir is None:
             print(f'Deleting unknown build dir {entry.name}')
             shutil.rmtree(entry)
+        else:
+            print(f'Importing cache dir {entry.name}')
+            entry.rename(problem_dir / 'build')
 
 
 if __name__ == '__main__':
