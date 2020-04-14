@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block pagetitle %}
+  Problems by difficulty
+{% endblock %}
+
+{% block breadcrumb_items %}
+  <li class="breadcrumb-item"><a href="/">Home</a></li>
+  <li class="breadcrumb-item active" aria-current="page">Difficulties</li>
+{% endblock %}
+
+{% block body %}
+  <ul>
+    {% for difficulty_name in DIFFICULTIES %}
+      <li>{{ difficulty_badge(loop.index) }} <a href="/difficulties/{{ difficulty_name | replace(' ', '-') }}.html">{{ difficulty_name }}</a></li>
+    {% endfor %}
+  </ul>
+{% endblock %}

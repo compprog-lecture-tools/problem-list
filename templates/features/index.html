@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block pagetitle %}
+  Problems by features
+{% endblock %}
+
+{% block breadcrumb_items %}
+  <li class="breadcrumb-item"><a href="/">Home</a></li>
+  <li class="breadcrumb-item active" aria-current="page">Features</li>
+{% endblock %}
+
+{% block body %}
+  <ul>
+    {% for feature in FEATURES %}
+      <li>{{ feature_badge(feature) }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

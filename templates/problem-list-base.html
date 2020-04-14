@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block body %}
+  {% block extrahead %}{% endblock -%}
+
+  {% for (course_name, contests) in courses -%}
+    <h3>{{ course_name }} {{ git_link(course_name) }}</h3>
+
+    {% for (contest_name, problems) in contests -%}
+      <h4>{{ contest_name }} {{ git_link(course_name + '/' + contest_name) }}</h4>
+
+      <ul>
+        {% for problem in problems -%}
+          <li id="{{ problem_html_id(course_name, contest_name, problem.name) }}">
+            {% if problem.difficulty %}
+              {{ difficulty_badge(problem.difficulty) }}
+            {% else %}
+              <a class="badge badge-danger" href="/incomplete/info.html">?</a>
+            {% endif %}
+            <a data-toggle="collapse" href="#details-{{ (problem | string).replace('/', '-') }}">{{ problem.name }}</a>
+
+            <span class="problem-tags float-right">
+              {% if not problem.tags %}
+                {{ missing_info_badge('info') }}
+              {% endif %}
+              {% if not problem.statement_ok %}
+                {{ missing_info_badge('pdf') }}
+              {% endif %}
+              {% if not problem.notes_ok %}
+                {{ missing_info_badge('notes') }}
+              {% endif %}
+              {% for feature in FEATURES %}
+                {% if problem['has_' + feature.replace('-', '_')] %}
+                  {{ feature_badge(feature) }}
+                {% endif %}
+              {% endfor %}
+              {% if problem.tags %}
+                {% for tag_name in problem.tags %}
+                  {{ tag_badge(tag_name) }}
+                {% endfor %}
+              {% endif %}
+            </span>
+
+            <ul class="collapse" id="details-{{ (problem | string).replace('/', '-') }}">
+              <li class="small text-muted">
+                {{ git_link(course_name + '/' + contest_name + '/' + problem.name) }}
+                {% if problem.statement_ok %}
+                  <a class="icon-link" href="/pdfs/{{ course_name }}/{{ contest_name }}/{{ problem.name }}/statement.pdf"><i class="far fa-file-pdf fa-sm"></i></a>
+                {% endif %}
+                {% if problem.notes_ok %}
+                  <a class="icon-link" href="/pdfs/{{ course_name }}/{{ contest_name }}/{{ problem.name }}/notes.pdf"><i class="far fa-sticky-note fa-sm"></i></a>
+                {% endif %}
+                {% if problem.based_on %}
+                  (based on:
+                  {% if problem.based_on.type == 'codeforces' %}
+                    {% set cf_contest, cf_problem = problem.based_on.data %}
+                    <a href="https://codeforces.com/contest/{{ cf_contest }}/problem/{{ cf_problem }}">
+                      {{ cf_contest }}{{ cf_problem }}</a>)
+                  {% elif problem.based_on.typ == 'oldproblem' %}
+                    {% set bo_course, bo_contest, bo_problem = problem.based_on.data %}
+                    <a href="/#{{ problem_html_id(bo_course, bo_contest, bo_problem) }}">
+                      {{ bo_course }}/{{ bo_contest }}/{{ bo_problem }})
+                    </a>
+                  {% else %}
+                    {{ problem.based_on.data[0] }})
+                  {% endif %}
+                {% endif %}
+              </li>
+            </ul>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endfor %}
+  {% endfor %}
+{% endblock %}

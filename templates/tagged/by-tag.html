@@ -1,0 +1,15 @@
+{% extends 'problem-list-base.html' %}
+
+{% block pagetitle %}
+  Problems tagged {{ tag_name }}
+{% endblock %}
+
+{% block title %}
+  Problems tagged {{ tag_badge(tag_name) }}
+{% endblock %}
+
+{% block breadcrumb_items %}
+  <li class="breadcrumb-item"><a href="/">Home</a></li>
+  <li class="breadcrumb-item"><a href="/tagged/">Tags</a></li>
+  <li class="breadcrumb-item active" aria-current="page">{{ tag_name | title }}</li>
+{% endblock %}

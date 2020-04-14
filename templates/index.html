@@ -1,0 +1,18 @@
+{% extends 'problem-list-base.html' %}
+
+{% block pagetitle %}
+  Problem list
+{% endblock %}
+
+{% block breadcrumb_items %}
+  <li class="breadcrumb-item active" aria-current="page">Home</li>
+{% endblock %}
+
+{% block extrahead %}
+  {% set not_ok_count = problems | selectattr("ok", "false") | list | count %}
+  {% if not_ok_count > 0 -%}
+    <div class="alert alert-danger" role="alert">
+      {{ not_ok_count }} problems are missing information or do not build!
+    </div>
+  {% endif -%}
+{% endblock %}

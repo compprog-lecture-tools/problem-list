@@ -1,0 +1,11 @@
+{% extends 'problem-list-base.html' %}
+
+{% block pagetitle %}
+  {{ title }}
+{% endblock %}
+
+{% block breadcrumb_items %}
+  <li class="breadcrumb-item"><a href="/">Home</a></li>
+  <li class="breadcrumb-item"><a href="/features/">Features</a></li>
+  <li class="breadcrumb-item active" aria-current="page">{{ feature_name | title }}</li>
+{% endblock %}

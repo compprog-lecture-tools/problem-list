@@ -1,0 +1,77 @@
+{% macro git_link(rel_url) %}
+  <a class="icon-link" href="{{ REPO_URL }}/tree/{{ REPO_BRANCH }}/{{ rel_url }}"><i class="fab fa-git-alt fa-sm"></i></a>
+{% endmacro %}
+{% macro difficulty_badge(difficulty) %}
+  <a href="/difficulties/{{ DIFFICULTIES[difficulty - 1].replace(' ', '-') }}.html" class="badge difficulty difficulty-{{ difficulty }}">{{ difficulty }}</a>
+{% endmacro %}
+{% macro tag_badge(name) %}
+  <a href="/tagged/{{ name }}.html" class="badge badge-info">{{ name }}</a>
+{% endmacro %}
+{% macro feature_badge(name) %}
+  <a href="/features/{{ name }}.html" class="badge badge-secondary">{{ name }}</a>
+{% endmacro %}
+{% macro missing_info_badge(name) %}
+  <a href="/incomplete/{{ name }}.html" class="badge badge-danger">no {{ name }}</a>
+{% endmacro %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap.min.css" integrity="sha256-/ykJw/wDxMa0AQhHDYfuMEwVb4JHMx9h4jD4XvHqVzU=" crossorigin="anonymous" />
+    <title>{% block pagetitle %}{% endblock %}</title>
+    <style type="text/css">
+      .icon-link {
+        margin-left: .25rem;
+      }
+      .problem-tags .badge {
+        margin-left: .25rem;
+      }
+      .badge.difficulty {
+        color: white;
+      }
+      .badge.difficulty-1 {
+        background-color: lightgreen;
+      }
+      .badge.difficulty-2 {
+        background-color: lawngreen;
+      }
+      .badge.difficulty-3 {
+        background-color: darkorange;
+      }
+      .badge.difficulty-4 {
+        background-color: red;
+      }
+      .badge.difficulty-5 {
+        background-color: darkred;
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <header>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          {% block breadcrumb_items %}{% endblock %}
+        </ol>
+      </nav>
+    </header>
+    <div class="container">
+      <div class="row">
+        <div class="offset-xl-2 col-xl-8 offset-lg-1 col-lg-10 col-md-12">
+          <h1>{% block title %}{{ self.pagetitle() }}{% endblock %}</h1>
+
+          {% block body %}{% endblock %}
+
+          <p class="mt-5 text-center text-muted small">
+            Generated from commit {{ GIT_HASH }} at {{ BUILD_TIME }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha256-WqU1JavFxSAMcLP2WIOI+GB2zWmShMI82mTpLDcqFUg=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
+  </body>
+</html>

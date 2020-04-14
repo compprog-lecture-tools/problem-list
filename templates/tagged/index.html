@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block pagetitle %}
+  Problems by tag
+{% endblock %}
+
+{% block breadcrumb_items %}
+  <li class="breadcrumb-item"><a href="/">Home</a></li>
+  <li class="breadcrumb-item active" aria-current="page">Tags</li>
+{% endblock %}
+
+{% block body %}
+  <ul>
+    {% for tag_name in TAGS %}
+      <li>{{ tag_badge(tag_name) }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

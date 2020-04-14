@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block pagetitle %}
+  Problems with missing information
+{% endblock %}
+
+{% block breadcrumb_items %}
+  <li class="breadcrumb-item"><a href="/">Home</a></li>
+  <li class="breadcrumb-item active" aria-current="page">Incomplete</li>
+{% endblock %}
+
+{% block body %}
+  <ul>
+    {% for type in ['info', 'pdf', 'notes'] %}
+      <li>{{ missing_info_badge(type) }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
