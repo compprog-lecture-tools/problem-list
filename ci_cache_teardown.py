@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import pathlib
-import shutil
 import sys
 
 SCRIPT_DIR = pathlib.Path(__file__).absolute().parent
