@@ -139,9 +139,18 @@ def group_problems(problems):
                       contest_name, problems in
                       itertools.groupby(problems, lambda p: p.contest))
 
-    return sorted(
-        (course_name, group_by_contest(problems)) for course_name, problems in
-        itertools.groupby(problems, lambda p: p.course))
+    def course_sort_key(course_name):
+        # This sorts course names with the format `{course_name}{year_number}`
+        # first by the year and then by the name. To make the code easier,
+        # year_number is expected to be two digits long
+        if len(course_name) >= 2 and course_name[-2:].isnumeric():
+            return course_name[-2:] + course_name[:-2]
+        return course_name
+
+    grouped_by_course = ((course_name, group_by_contest(problems)) for
+               course_name, problems in
+               itertools.groupby(problems, lambda p: p.course))
+    return sorted(grouped_by_course, key=lambda t: course_sort_key(t[0]))
 
 
 def render_template(name, target_path, jinja_env, **kwargs):
