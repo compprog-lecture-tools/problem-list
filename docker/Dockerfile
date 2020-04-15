@@ -13,4 +13,5 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* /libipe.deb /ipe.deb && \
     # After this command, the python3-pip (a.k.a. pip using the default python 3.6) now uses python3.7
     update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 1 && \
-    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 1
+    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 1 && \
+    pip3 install pygments
