@@ -8,7 +8,13 @@
   <a href="/tagged/{{ name }}.html" class="badge badge-info">{{ name }}</a>
 {% endmacro %}
 {% macro feature_badge(name) %}
-  <a href="/features/{{ name }}.html" class="badge badge-secondary">{{ name }}</a>
+  <a href="/features/{{ name }}.html" class="badge badge-secondary">
+    {% if name == 'python' %}
+      <i class="fab fa-python"></i>
+    {% else %}
+      {{ name }}
+    {% endif %}
+  </a>
 {% endmacro %}
 {% macro missing_info_badge(name) %}
   <a href="/incomplete/{{ name }}.html" class="badge badge-danger">no {{ name }}</a>
