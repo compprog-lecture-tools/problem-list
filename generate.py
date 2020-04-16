@@ -17,8 +17,6 @@ sys.path.append(str(SCRIPT_DIR))
 from lib import find_problems
 
 
-NOT_COURSES = {'tools'}
-NOT_CONTESTS = {'templates'}
 DIFFICULTIES = ['trivial', 'easy', 'medium', 'hard', 'very hard']
 FEATURES = ['validator', 'answer-generator', 'interactor', 'python']
 FEATURE_TITLES = [
