@@ -56,7 +56,7 @@
                     {% set cf_contest, cf_problem = problem.based_on.data %}
                     <a href="https://codeforces.com/contest/{{ cf_contest }}/problem/{{ cf_problem }}">
                       {{ cf_contest }}{{ cf_problem }}</a>)
-                  {% elif problem.based_on.typ == 'oldproblem' %}
+                  {% elif problem.based_on.type == 'old-problem' %}
                     {% set bo_course, bo_contest, bo_problem = problem.based_on.data %}
                     <a href="/#{{ problem_html_id(bo_course, bo_contest, bo_problem) }}">
                       {{ bo_course }}/{{ bo_contest }}/{{ bo_problem }})
