@@ -1,5 +1,23 @@
 {% extends 'base.html' %}
 
+{% block before_title %}
+  <div class="btn-group float-right">
+    <button id="open-all" type="button" class="btn btn-secondary btn-sm">Open all</button>
+    <button id="close-all" type="button" class="btn btn-secondary btn-sm">Close all</button>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  $(document).ready(function() {
+    $('#open-all').click(function() {
+      $('.collapse').collapse('show');
+    });
+    $('#close-all').click(function() {
+      $('.collapse').collapse('hide');
+    });
+  });
+{% endblock %}
+
 {% block body %}
   {% block extrahead %}{% endblock -%}
 
@@ -22,6 +40,8 @@
             <span class="problem-tags float-right">
               {% if not problem.tags %}
                 {{ missing_info_badge('info') }}
+              {% elif not problem.description  %}
+                {{ missing_info_badge('description') }}
               {% endif %}
               {% if not problem.statement_ok %}
                 {{ missing_info_badge('pdf') }}
@@ -50,22 +70,29 @@
                 {% if problem.notes_ok %}
                   <a class="icon-link" href="/pdfs/{{ course_name }}/{{ contest_name }}/{{ problem.name }}/notes.pdf"><i class="far fa-sticky-note fa-sm"></i></a>
                 {% endif %}
-                {% if problem.based_on %}
-                  (based on:
+              </li>
+              {% if problem.description %}
+                <li class="small text-muted">
+                  {{ problem.description }}
+                </li>
+              {% endif %}
+              {% if problem.based_on %}
+                <li class="small text-muted">
+                  Based on:
                   {% if problem.based_on.type == 'codeforces' %}
                     {% set cf_contest, cf_problem = problem.based_on.data %}
                     <a href="https://codeforces.com/contest/{{ cf_contest }}/problem/{{ cf_problem }}">
-                      {{ cf_contest }}{{ cf_problem }}</a>)
+                      {{ cf_contest }}{{ cf_problem }}</a>
                   {% elif problem.based_on.type == 'old-problem' %}
                     {% set bo_course, bo_contest, bo_problem = problem.based_on.data %}
                     <a href="/#{{ problem_html_id(bo_course, bo_contest, bo_problem) }}">
-                      {{ bo_course }}/{{ bo_contest }}/{{ bo_problem }})
+                      {{ bo_course }}/{{ bo_contest }}/{{ bo_problem }}
                     </a>
                   {% else %}
-                    {{ problem.based_on.data[0] }})
+                    {{ problem.based_on.data[0] }}
                   {% endif %}
-                {% endif %}
-              </li>
+                </li>
+              {% endif %}
             </ul>
           </li>
         {% endfor %}

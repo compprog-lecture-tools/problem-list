@@ -37,6 +37,9 @@
       .badge.difficulty {
         color: white;
       }
+      li > ul > li {
+        margin-left: -1.5rem;
+      }
       .badge.difficulty-1 {
         background-color: lightgreen;
       }
@@ -65,6 +68,8 @@
     <div class="container">
       <div class="row">
         <div class="offset-xl-2 col-xl-8 offset-lg-1 col-lg-10 col-md-12">
+          {% block before_title %}{% endblock %}
+
           <h1>{% block title %}{{ self.pagetitle() }}{% endblock %}</h1>
 
           {% block body %}{% endblock %}
@@ -79,5 +84,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha256-WqU1JavFxSAMcLP2WIOI+GB2zWmShMI82mTpLDcqFUg=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
+
+    <script>
+      {% block extra_js %}{% endblock %}
+    </script>
   </body>
 </html>

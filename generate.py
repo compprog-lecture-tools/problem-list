@@ -16,7 +16,6 @@ SCRIPT_DIR = pathlib.Path(__file__).absolute().parent
 sys.path.append(str(SCRIPT_DIR))
 from lib import find_problems
 
-
 DIFFICULTIES = ['trivial', 'easy', 'medium', 'hard', 'very hard']
 FEATURES = ['validator', 'answer-generator', 'interactor', 'python']
 FEATURE_TITLES = [
@@ -62,6 +61,7 @@ class Problem:
     has_python: bool
     difficulty: Optional[int]
     tags: Optional[List[str]]
+    description: Optional[str]
     based_on: Optional[BasedOnInfo]
     statement_ok: bool = False
     notes_ok: bool = False
@@ -71,7 +71,8 @@ class Problem:
 
     @property
     def ok(self):
-        return self.tags is not None and self.statement_ok and self.notes_ok
+        return (self.tags is not None and self.statement_ok and
+                self.notes_ok and self.description)
 
     @classmethod
     def load(cls, problem_dir):
@@ -80,19 +81,20 @@ class Problem:
                 data = json.load(f)
                 difficulty = data['difficulty']
                 tags = data['tags']
+                description = data.get('description')
                 based_on = data.get('based_on')
                 if based_on is not None:
                     based_on = BasedOnInfo(type=based_on['type'],
                                            data=based_on['data'])
         except FileNotFoundError:
-            difficulty, tags, based_on = None, None, None
+            difficulty, tags, description, based_on = None, None, None, None
         executables_dir = (problem_dir / 'executables')
         has_validator = any(executables_dir.glob('validator.*'))
         has_interactor = any(executables_dir.glob('interactor.*'))
         has_answer_generator = any(executables_dir.glob('answer-generator.*'))
         has_python = any(e for e in executables_dir.glob('solution*.py') if
                          not e.name.endswith('.wa.py') and
-                         not e.name.endswith('tle.py'))
+                         not e.name.endswith('.tle.py'))
         name = problem_dir.name
         contest = problem_dir.parent.name
         course = problem_dir.parents[1].name
@@ -100,7 +102,7 @@ class Problem:
                    has_validator=has_validator, has_interactor=has_interactor,
                    has_answer_generator=has_answer_generator,
                    has_python=has_python, difficulty=difficulty, tags=tags,
-                   based_on=based_on)
+                   description=description, based_on=based_on)
 
 
 def build_pdfs(problems, out_dir):
@@ -146,8 +148,8 @@ def group_problems(problems):
         return course_name
 
     grouped_by_course = ((course_name, group_by_contest(problems)) for
-               course_name, problems in
-               itertools.groupby(problems, lambda p: p.course))
+                         course_name, problems in
+                         itertools.groupby(problems, lambda p: p.course))
     return sorted(grouped_by_course, key=lambda t: course_sort_key(t[0]))
 
 
@@ -186,8 +188,9 @@ def generate_pages(problems, args):
         'problem_html_id': problem_html_id,
     }
 
+    not_ok_count = sum(1 for p in problems if not p.ok)
     render_problem_list_template('index.html', out_dir / 'index.html',
-                                 jinja_env, problems)
+                                 jinja_env, problems, not_ok_count=not_ok_count)
 
     difficulties_dir = out_dir / 'difficulties'
     difficulties_dir.mkdir(exist_ok=True)
@@ -227,7 +230,11 @@ def generate_pages(problems, args):
                     jinja_env)
     render_problem_list_template('incomplete/info.html',
                                  incomplete_dir / 'info.html', jinja_env,
-                                 [p for p in problems if p.difficulty is None])
+                                 [p for p in problems if p.tags is None])
+    render_problem_list_template('incomplete/description.html',
+                                 incomplete_dir / 'description.html', jinja_env,
+                                 [p for p in problems if
+                                  p.tags is not None and not p.description])
     render_problem_list_template('incomplete/pdf.html',
                                  incomplete_dir / 'pdf.html', jinja_env,
                                  [p for p in problems if not p.statement_ok])
