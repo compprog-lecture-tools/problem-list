@@ -144,7 +144,7 @@ def course_sort_key(course_name):
 
 def problem_sort_key(problem):
     # Sort by ascending difficulty, then alphabetically
-    return problem.difficulty, problem.name
+    return problem.difficulty or -1, problem.name
 
 
 def group_by_contest(problems):
